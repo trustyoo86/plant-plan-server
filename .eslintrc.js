@@ -26,7 +26,9 @@ module.exports = {
       'varsIgnorePattern': '^_'
     }],
     'prettier/prettier': ['error', {}, { 'usePrettierrc': true }],
-    'no-console': ['warn', { 'allow': ['warn', 'error'] }],
+    'no-console': ['warn', { 
+      'allow': ['warn', 'error', 'info'] 
+    }],
     'no-return-await': 'error',
     'no-unused-expressions': 'error',
     'no-unused-labels': 'error',
