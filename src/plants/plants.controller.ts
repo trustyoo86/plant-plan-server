@@ -13,6 +13,7 @@ export class PlantsController {
 
   @Get(':name')
   async findByName(@Param('name') name: string): Promise<Plant> {
-    return this.plantsService.findByName(name);
+    const decodedName = decodeURIComponent(name);
+    return this.plantsService.findByName(decodedName);
   }
 }

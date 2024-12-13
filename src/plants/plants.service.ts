@@ -33,14 +33,27 @@ export class PlantsService {
 
   async findByName(name: string): Promise<Plant> {
     try {
+      const encodedName = encodeURIComponent(name);
+      console.info('Searching for plant:', name);
+      console.info('Encoded name:', encodedName);
+      console.info('Request URL:', `${this.baseUrl}/getTreeService`);
+      console.info('Request params:', {
+        ServiceKey: this.apiKey,
+        plntbneNm: encodedName,
+      });
+
       const response = await firstValueFrom(
         this.httpService.get(`${this.baseUrl}/getTreeService`, {
           params: {
             ServiceKey: this.apiKey,
-            plntbneNm: name, // 식물명으로 검색
+            plntbneNm: encodedName,
+            numOfRows: 10,
+            pageNo: 1,
           },
         }),
       );
+
+      console.info('API Response:', response.data);
 
       const items = response.data.response.body.items.item;
       if (!items) {
@@ -50,10 +63,16 @@ export class PlantsService {
       const plants = this.mapToPlants(Array.isArray(items) ? items : [items]);
       return plants[0];
     } catch (error) {
+      console.error('Detailed error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: error.config
+      });
+      
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.error('Error fetching plant:', error);
       throw new NotFoundException(`Error fetching plant with name ${name}`);
     }
   }
